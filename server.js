@@ -10,7 +10,7 @@ var Article = require("./models/Article.js");
 var request = require("request");
 var cheerio = require("cheerio");
 // Set mongoose to leverage built in JavaScript ES6 Promises
-mongoose.Promise = Promise;
+/*mongoose.Promise = Promise;*/
 
 
 // Initialize Express
@@ -26,19 +26,11 @@ app.use(bodyParser.urlencoded({
 app.use(express.static("public"));
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/nyt-scraper");
-var db = mongoose.connection;
-
-// Show any mongoose errors
-db.on("error", function(error) {
-  console.log("Mongoose Error: ", error);
+var promise = mongoose.connect("mongodb://localhost/nyt-scraper", {useMongoClient: true}, function(error) {
+  if (error) {
+    console.log("Mongoose Error: ", error);
+  }
 });
-
-// Once logged in to the db through mongoose, log a success message
-db.once("open", function() {
-  console.log("Mongoose connection successful.");
-});
-
 
 // Routes
 // ======
@@ -56,24 +48,24 @@ app.get("/scrape", function(req, res) {
       var result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
-      result.title = $(element).children().text();
-      result.link = $(element).children().attr("href");
+      let title = $(element).children("a").text();
+      let link = $(element).children("a").attr("href");
 
-      // Using our Article model, create a new entry
-      // This effectively passes the result object to the entry (and the title and link)
-      var entry = new Article(result);
+      if ( (title != NaN || title != undefined) || (link != NaN || link != undefined) ) {
+        result.title = title;
+        result.link = link;
 
-      // Now, save that entry to the db
-      entry.save(function(err, doc) {
-        // Log any errors
-        if (err) {
-          console.log(err);
-        }
-        // Or log the doc
-        else {
-          console.log(doc);
-        }
-      });
+/*        let entry = new Article(result);
+
+        entry.save(function(err, doc) {
+          if (err) {
+            console.log(err);
+          }
+          else {
+            console.log(doc);
+          }
+        })*/
+      }
 
     });
   });
