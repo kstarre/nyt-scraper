@@ -1,12 +1,28 @@
-// Grab the articles as a json
-$.getJSON("/articles", function(data) {
+// Grab the saved articles as a json
+/*$.getJSON("/articles", function(data) {
   // For each one
   for (var i = 0; i < data.length; i++) {
     // Display the apropos information on the page
     $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
   }
-});
+});*/
 
+// On button click, grab articles from the scrape 
+$("button").on("click", function() {
+  $("#articles").empty();
+  $.getJSON("/scrape", function(data) {
+    for (var i = 0; i < data.length; i++) {
+      if ( (data[i].title === "") || (data[i].link === "" ) ) {
+
+      }
+      else {
+        $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+
+      }
+    }
+
+  })
+})
 
 // Whenever someone clicks a p tag
 $(document).on("click", "p", function() {

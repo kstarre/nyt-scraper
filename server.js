@@ -37,23 +37,23 @@ var promise = mongoose.connect("mongodb://localhost/nyt-scraper", {useMongoClien
 
 // A GET request to scrape the NYT website
 app.get("/scrape", function(req, res) {
+
   // First, we grab the body of the html with request
   request("https://www.nytimes.com/", function(error, response, html) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(html);
+    let result = [];
     // Now, we grab every h2:
     $("h2.story-heading").each(function(i, element) {
 
-      // Save an empty result object
-      var result = {};
-
+      let article = {};
       // Add the text and href of every link, and save them as properties of the result object
       let title = $(element).children("a").text();
       let link = $(element).children("a").attr("href");
 
-      if ( (title != NaN || title != undefined) || (link != NaN || link != undefined) ) {
-        result.title = title;
-        result.link = link;
+      article.title = title;
+      article.link = link;
+      result.push(article);
 
 /*        let entry = new Article(result);
 
@@ -65,12 +65,10 @@ app.get("/scrape", function(req, res) {
             console.log(doc);
           }
         })*/
-      }
-
     });
+    res.json(result);
+    console.log("Scrape complete");
   });
-  // Tell the browser that we finished scraping the text
-  res.send("Scrape Complete");
 });
 
 // This will get the articles we scraped from the mongoDB
