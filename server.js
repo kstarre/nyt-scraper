@@ -55,16 +55,6 @@ app.get("/scrape", function(req, res) {
       article.link = link;
       result.push(article);
 
-/*        let entry = new Article(result);
-
-        entry.save(function(err, doc) {
-          if (err) {
-            console.log(err);
-          }
-          else {
-            console.log(doc);
-          }
-        })*/
     });
     res.json(result);
     console.log("Scrape complete");
@@ -91,16 +81,6 @@ app.get("/articles", function(req, res) {
 // This will grab an article by it's ObjectId
 app.get("/articles/:id", function(req, res) {
 
-
-  // TODO
-  // ====
-
-  // Finish the route so it finds one article using the req.params.id,
-
-  // and run the populate method with "note",
-
-  // then responds with the article with the note included
-
   Article.findOne({"_id" : req.params.id}).populate("note").exec(function(err, data) {
     if (err) {
       res.send(err)
@@ -109,6 +89,22 @@ app.get("/articles/:id", function(req, res) {
       res.send(data);
     }
   })
+});
+
+// Save an article to the db
+app.post("/save", function(req, res) {
+
+
+  //let entry = new Article(req.body);
+  console.log(req.body);
+/*  entry.save(function(err, doc) {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      console.log(doc);
+    }
+  })*/
 });
 
 // Create a new note or replace an existing note

@@ -8,7 +8,8 @@
 });*/
 
 // On button click, grab articles from the scrape 
-$("button").on("click", function() {
+$("#scrape").on("click", function(event) {
+  event.preventDefault();
   $("#articles").empty();
   $.getJSON("/scrape", function(data) {
     for (var i = 0; i < data.length; i++) {
@@ -16,15 +17,15 @@ $("button").on("click", function() {
 
       }
       else {
-        $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+        $("#articles").append("<p>" + data[i].title + "<br />" + data[i].link + "</p> <form action='/save' method='post'><input name='title' type='hidden' value='" + data[i].title + "' /><input name='link' type='hidden' value='" + data[i].link + "' /><button class='btn btn-default' id='save' type='submit'>Save</button> </form>");
 
       }
     }
-
   })
-})
+});
 
-// Whenever someone clicks a p tag
+
+/*// Whenever someone clicks a p tag
 $(document).on("click", "p", function() {
   // Empty the notes from the note section
   $("#notes").empty();
@@ -56,9 +57,9 @@ $(document).on("click", "p", function() {
         $("#bodyinput").val(data.note.body);
       }
     });
-});
+});*/
 
-// When you click the savenote button
+/*// When you click the savenote button
 $(document).on("click", "#savenote", function() {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
@@ -85,4 +86,4 @@ $(document).on("click", "#savenote", function() {
   // Also, remove the values entered in the input and textarea for note entry
   $("#titleinput").val("");
   $("#bodyinput").val("");
-});
+});*/
